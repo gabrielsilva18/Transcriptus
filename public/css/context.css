@@ -1,0 +1,57 @@
+.card {
+  border-radius: 10px;
+  border: none;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.button-rounded {
+  margin-left: 10px;
+  border-radius: 30px;
+  height: 60px;
+  width: 50px;
+  background-color: #021134;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(-50px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Phrases */
+.phrase-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+} 
+
+.english-phrase {
+  width: 45%;
+  background-color: #e8f3fd;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.portuguese-phrase {
+  width: 45%;
+  background-color: #fef3e8;
+  padding: 10px;
+  border-radius: 10px;
+}

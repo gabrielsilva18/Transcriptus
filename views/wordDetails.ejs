@@ -1,0 +1,89 @@
+<%- include("./partials/header.ejs") %>
+  <%- include("./partials/navbar.ejs") %>
+
+    <body>
+      <hr />
+      <div class="container">
+        <div class="card info-word">
+          <div class="row">
+            <div class="col-md-30">
+
+              <b class="word">
+                <%= wordInfo.word %>
+              </b> [ <%= wordInfo.ipa %> ] <i>
+                  <%= wordInfo.pronounce %>
+                </i> <i class="bi bi-volume-up-fill" onclick="audio.play()" id="player-audio"
+                  style="font-size: 1.8em;"></i>
+                <p>Traduções da palavra <%= wordInfo.word %>
+                </p>
+                <div class="card-body">
+                  <ul>
+                    <% wordInfo.translation.forEach(function(word){ %>
+                      <button class="btn translation-button">
+                        <%= word %><br />
+                      </button>
+                      <% }) %>
+                  </ul>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-30">
+              <h3>Frases de Contexto</h3>
+              <hr>
+              <div class="card-body">
+                <% wordInfo.phrases.forEach(function(phrase) { %>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <%- phrase.english.replace(wordInfo.word, `<mark class="highlight">${wordInfo.word}</mark>`) %>
+                    </div>
+                    <div class="col-sm-6">
+                      <%= phrase.portuguese %>
+                    </div>
+                  </div>
+                  <hr class="hr-dashed" />
+                  <% }); %>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+        <br><br>
+      </div>
+      <style>
+        .info-word {
+          background-color: white;
+        }
+
+        .translation-button {
+          background-color: #E2ECFF;
+          margin-right: 10px;
+          margin-bottom: 10px;
+        }
+
+        .translation-button:hover {
+          color: white;
+          background-color: #0970AC;
+        }
+
+        #player-audio:hover {
+          color: #0970AC;
+        }
+
+        .hr-dashed {
+          border-top: 3px dashed black;
+        }
+
+        .word {
+          font-size: 40px;
+        }
+
+        .highlight {
+          background-color: #FCEC17;
+        }
+      </style>
+      <script>
+        const audio = new Audio()
+        audio.src = "<%= wordInfo.audio  %>"
+      </script>
+      <%- include("./partials/footer.ejs") %>

@@ -1,0 +1,27 @@
+<%- include("./partials/header.ejs") %>
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/context.css">
+    <%- include("./partials/navbar.ejs") %>
+
+        <body>
+            <div class="container main">
+                <div class="card text-center">
+                    <h1>Gerador de Frases</h1>
+                    <div class="card-body">
+                        <form id="form">
+                            <div class="input-group">
+                                <input class="form-control text-md text-input input-total-rounded" name="text"
+                                    type="search" id="word"
+                                    placeholder="Digite a palavra para obter frases de contexto"></input>
+                                <button type="submit" id="gerador" class="btn btn-primary button-rounded ">
+                                    <span class="spinner-border spinner-border-sm mr-2 d-none" role="status"
+                                        aria-hidden="true"></span><b><i class="bi bi-eye" id="eye"></i></b></button>
+                            </div>
+                        </form>
+                        <br>
+                        <div id="outputDiv" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            <script src="/js/context.js"></script>
+            <%- include("./partials/footer.ejs") %>

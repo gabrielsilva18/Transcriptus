@@ -1,0 +1,32 @@
+{
+  "name": "transcriptus",
+  "version": "2.0.0",
+  "description": "translate your english text into its phonetic transcrition",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch server.js",
+    "build": "npm i"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bing-translate-api": "^2.9.1",
+    "body-parser": "^1.20.2",
+    "check-word": "^1.1.0",
+    "cookie-parser": "^1.4.6",
+    "dayjs": "^1.11.10",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "gtts": "^0.2.1",
+    "joi": "^17.12.2",
+    "npm": "^10.4.0",
+    "reverso-api": "^2.22.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

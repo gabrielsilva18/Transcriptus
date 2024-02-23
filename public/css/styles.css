@@ -1,0 +1,73 @@
+/* general */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto:wght@100;300;400;500;700;900&family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins';
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #F5F5F5;
+  font-size: 18px;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* card styles */
+
+.card {
+  background-color: #F5F5F5;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out;
+  /* border: 80px solid #000; */
+}
+
+.card-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: slideIn 0.5s ease-out;
+}
+
+.card-body {
+  font-size: 1.2rem;
+  animation: slideIn 0.5s ease-out;
+}
+
+.word-day {
+  font-family: Times New Roman;
+  font-size: 40px;
+}
+
+.card-word-of-day{
+  border:  0.2px solid black;
+}
+
+/* Details */
+#player-audio {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+#copyButton {
+  cursor: pointer;
+}
+
+#copyButton{
+  font-size: 20px;
+}
+
+.text-input {
+  font-size:  23px; /* Defina o tamanho da fonte desejado */
+  font-family: "Poppins";
+}

@@ -1,0 +1,95 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins';
+}
+
+body {
+  align-items: center;
+  justify-content: center;
+  background-color: #021134;
+  height: 100vh; /* altura total da página */
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%; /* altura total do container */
+}
+
+h1 {
+  color: white;
+  letter-spacing: 1px;
+}
+
+.content {
+  padding: 15px;
+  box-shadow: 0 1px 2px #0003;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 70%;
+  max-width: 700px; /* largura máxima do conteúdo */
+  margin: auto; /* centralizar horizontalmente */
+}
+
+.divSelects {
+  display: flex;
+  gap: 5px;
+}
+
+.language {
+  width: 50%;
+  padding: 10px;
+  outline: none;
+  font-size: 18px;
+  border-color: #ddd;
+  border-radius: 5px;
+}
+
+.divTextareas {
+  display: flex;
+  gap: 5px;
+  border-radius: 5px;
+}
+
+textarea {
+  border-color: #ddd;
+  outline: none;
+  padding: 5px;
+  font-size: 18px;
+  width: 50%;
+  border-radius: 5px;
+  resize: none;
+}
+
+button {
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  background-color: #021134;
+  color: white;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+.clear-button {
+  background-color: #363636;
+}
+
+.clear-button:hover {
+  background-color: #1a1a1a;
+}
+
+button:hover {
+  opacity: 0.9;
+}

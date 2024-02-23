@@ -1,0 +1,38 @@
+<%- include("./partials/header.ejs") %>
+    <%- include("./partials/navbar-white.ejs") %>
+        <link rel="stylesheet" href="/css/translator.css">
+
+        <body>
+            <form id="translationForm" action="/significado" method="post">
+                <div class="container">
+                    <br>
+                    <h1>Tradutor de Inglês para Português</h1>
+                    <div class="content">
+                        <div class="divSelects">
+                            <div class="language">
+                                <img src="/img/eua-icon.svg" width="30" height="30" alt="Ícone Inglês"> INGLÊS
+                            </div>
+                            <div class="language">
+                                <img src="/img/brazil-icon.svg" width="30" height="30" alt="Ícone Inglês"> PORTUGUÊS
+                            </div>
+                        </div>
+                        <div class="divTextareas">
+                            <textarea id="inputText" name="texts" rows="8"
+                                placeholder="Escreva ou cole seu texto aqui"></textarea>
+                            <textarea class="output-block" id="output" rows="8" placeholder="Tradução"
+                                disabled></textarea>
+                        </div>
+                        <button id="traduzir" type="submit">TRADUZIR</button>
+                        <button class="btn btn-primary clear-button" type="reset" onclick="clearTextArea()">
+                            <b>
+                                <i class="bi bi-trash"></i>
+                                LIMPAR
+                            </b>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </body>
+        <script src="/js/translator.js"></script>
+
+        </html>
