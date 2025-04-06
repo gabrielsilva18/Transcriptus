@@ -11,8 +11,8 @@ const routerSave = require("./routes/wordDetails.routes");
 const routerTranslator = require("./routes/translator.routes");
 const routerApp = require("./routes/app.routes");
 const routeContext = require("./routes/context.routes");
-const authRoutes = require('./routes/auth.routes');
-const historyRoutes = require('./routes/history.routes');
+const authRoutes = require("./routes/auth.routes");
+const historyRoutes = require("./routes/history.routes");
 
 const port = process.env.PORT || 3000;
 
@@ -22,7 +22,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: { secure: process.env.NODE_ENV === "production" },
   })
 );
 app.use(flash());
@@ -44,8 +44,8 @@ app.use(async (req, res, next) => {
         select: {
           id: true,
           name: true,
-          email: true
-        }
+          email: true,
+        },
       });
       res.locals.user = user;
     } catch (err) {
@@ -55,13 +55,14 @@ app.use(async (req, res, next) => {
   } else {
     res.locals.user = null;
   }
+  console.log("teste");
   next();
 });
 
 app.use("/", routerApp);
 app.use(routerSave, routerTranslator, routeContext);
-app.use('/', authRoutes);
-app.use('/', historyRoutes);
+app.use("/", authRoutes);
+app.use("/", historyRoutes);
 
 app.listen(port, (err) => {
   if (err) console.log(err);
