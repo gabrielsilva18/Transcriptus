@@ -3,20 +3,26 @@ const session = require("express-session");
 const flash = require("express-flash");
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 const routerSave = require("./routes/wordDetails.routes");
 const routerTranslator = require("./routes/translator.routes");
 const routerApp = require("./routes/app.routes");
 const routeContext = require("./routes/context.routes");
+const authRoutes = require('./routes/auth.routes');
+const historyRoutes = require('./routes/history.routes');
 
 const port = process.env.PORT || 3000;
 
 // Configure session and flash middleware
 app.use(
   session({
-    secret: ["T8c11KXKhf6NIsQ", "0sZ9sesp6LMG8le", "84F8IQbW24nuxvv"],
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
   })
 );
 app.use(flash());
@@ -28,8 +34,34 @@ app.use(bodyParser.json());
 
 // define path of static files and routes
 app.use(express.static("public"));
+
+app.use(async (req, res, next) => {
+  if (req.session.token) {
+    try {
+      const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET);
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      });
+      res.locals.user = user;
+    } catch (err) {
+      res.locals.user = null;
+      req.session.token = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
+
 app.use("/", routerApp);
 app.use(routerSave, routerTranslator, routeContext);
+app.use('/', authRoutes);
+app.use('/', historyRoutes);
 
 app.listen(port, (err) => {
   if (err) console.log(err);

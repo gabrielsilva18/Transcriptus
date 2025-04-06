@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const wordDetails = require("../controllers/wordDetails.controller");
 const wordIsValid = require("../utils/validationInput");
+const authMiddleware = require('../middleware/auth.middleware');
 
 router.get("/contexto", (req, res) => {
   res.render("context");
 });
 
-router.post("/frases", async (req, res) => {
+router.post("/frases", authMiddleware, async (req, res) => {
   if (!wordIsValid(req.body.text)) {
     return res.status(400).json({ error: "A palavra digitada é inválida" });
   }

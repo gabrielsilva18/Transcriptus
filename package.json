@@ -4,14 +4,16 @@
   "description": "translate your english text into its phonetic transcrition",
   "main": "index.js",
   "scripts": {
-    "start": "node --watch server.js",
+    "start": "nodemon server.js",
     "build": "npm i"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.10.0",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
     "bing-translate-api": "^2.9.1",
     "body-parser": "^1.20.2",
     "check-word": "^1.1.0",
@@ -23,8 +25,11 @@
     "express-session": "^1.17.3",
     "gtts": "^0.2.1",
     "joi": "^17.12.2",
+    "jsonwebtoken": "^9.0.2",
     "npm": "^10.4.0",
-    "reverso-api": "^2.22.3"
+    "prisma": "^5.10.0",
+    "puppeteer": "^24.6.0",
+    "reverso-api": "^2.22.10"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

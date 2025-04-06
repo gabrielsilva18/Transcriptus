@@ -1,18 +1,18 @@
 /* general */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto:wght@100;300;400;500;700;900&family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto:wght@100;300;400;500;700;900&family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap");
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   font-size: 18px;
 }
 
@@ -24,30 +24,41 @@ p {
 /* card styles */
 
 .card {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   padding: 20px;
   animation: fadeIn 0.5s ease-out;
   /* border: 80px solid #000; */
+}
+.row {
+  /* border: 0.2px solid rgb(15, 13, 13);*/
+}
+.card mt-3 {
+  border: 0.2px solid rgb(15, 13, 13);
 }
 
 .card-header {
   font-size: 1.5rem;
   font-weight: bold;
   animation: slideIn 0.5s ease-out;
+  border: 0.2px solid rgb(15, 13, 13);
 }
 
 .card-body {
+  /*car do botão de sortear(ao redor dele)*/
   font-size: 1.2rem;
   animation: slideIn 0.5s ease-out;
+  /*border: 0.2px solid gray;*/
 }
 
 .word-day {
+  /*Palavra sorteada*/
   font-family: Times New Roman;
   font-size: 40px;
+  /*border: 0.2px solid gray;*/
 }
 
-.card-word-of-day{
-  border:  0.2px solid black;
+.card-word-of-day {
+  border: 0.2px solid black;
 }
 
 /* Details */
@@ -63,11 +74,163 @@ p {
   cursor: pointer;
 }
 
-#copyButton{
+#copyButton {
   font-size: 20px;
 }
 
 .text-input {
-  font-size:  23px; /* Defina o tamanho da fonte desejado */
+  font-size: 23px; /* Defina o tamanho da fonte desejado */
   font-family: "Poppins";
+}
+
+.ms-auto {
+  margin-left: auto !important;
+}
+
+.nav-item.nav-link {
+  color: #fff !important;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  font-family: "Roboto";
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 16px;
+}
+
+.nav-item.nav-link:hover {
+  color: #5582ed !important;
+  transform: translateY(-2px);
+}
+
+.user-name {
+  color: #FCEC17 !important;
+  font-weight: bold;
+}
+
+.history-link {
+  position: relative;
+}
+
+.history-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #5582ed;
+  transition: width 0.3s ease;
+}
+
+.history-link:hover::after {
+  width: 100%;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para a página de histórico */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  border-top: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.badge {
+  padding: 0.5em 0.75em;
+  font-weight: 500;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.history-empty {
+  padding: 3rem 0;
+  text-align: center;
+  color: #6c757d;
+}
+
+.history-empty i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Estilos para o verificador de pronúncia */
+.pronunciation-check {
+  background-color: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+.pronunciation-check h4 {
+  color: #021134;
+  margin-bottom: 20px;
+}
+
+#startRecording, #stopRecording {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+#startRecording {
+  background-color: #021134;
+  border-color: #021134;
+}
+
+#startRecording:hover {
+  background-color: #0a2468;
+  border-color: #0a2468;
+}
+
+#recordingStatus {
+  font-size: 16px;
+  color: #666;
+}
+
+.progress {
+  height: 10px;
+  border-radius: 5px;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  transition: width 0.3s ease;
+}
+
+#pronunciationResult {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.recording-animation {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }

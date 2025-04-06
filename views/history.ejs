@@ -1,0 +1,61 @@
+<%- include("./partials/header.ejs") %>
+<%- include("./partials/navbar.ejs") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Seu Histórico de Buscas</h2>
+  
+  <div class="row">
+    <div class="col-md-12 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Palavra</th>
+                  <th>Tipo</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (searches && searches.length > 0) { %>
+                  <% searches.forEach(search => { %>
+                    <tr>
+                      <td><strong><%= search.word %></strong></td>
+                      <td>
+                        <span class="badge <%= search.type === 'PRONUNCIATION' ? 'bg-primary' : 'bg-success' %>">
+                          <%= search.type === 'PRONUNCIATION' ? 'Pronúncia' : 'Tradução' %>
+                        </span>
+                      </td>
+                      <td><%= new Date(search.createdAt).toLocaleDateString('pt-BR') %></td>
+                      <td>
+                        <% if (search.type === 'PRONUNCIATION') { %>
+                          <a href="/word/<%= search.word %>" class="btn btn-sm btn-primary">
+                            <i class="bi bi-soundwave"></i> Ver Pronúncia
+                          </a>
+                        <% } else { %>
+                          <a href="/tradutor?word=<%= search.word %>" class="btn btn-sm btn-success">
+                            <i class="bi bi-translate"></i> Ver Tradução
+                          </a>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="4" class="text-center">
+                      Nenhuma busca encontrada. Comece a explorar palavras!
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("./partials/footer.ejs") %> 

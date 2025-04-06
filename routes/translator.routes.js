@@ -14,7 +14,8 @@ router.get("/tradutor", (req, res) => {
 router.post("/significado", async (req, res) => {
   try {
     const text = req.body.texts;
-    const translatedText = await translatorController.translateText(text);
+    const userId = res.locals.user?.id;
+    const translatedText = await translatorController.translateText(text, userId);
     res.json({ translatedText });
   } catch (err) {
     console.error(err);

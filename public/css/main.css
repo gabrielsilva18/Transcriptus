@@ -1,17 +1,19 @@
 .input-total-rounded {
-    border-radius: 30px;
-  }
+  border-radius: 30px;
+}
 
-  .btn-primary {
-    margin-left: 10px;
-    border-radius: 30px;
-    height: 60px;
-    width: 50px;
-    background-color: #021134;
-  }
+.btn-primary {
+  margin-left: 10px;
+  border-radius: 30px;
+  height: 60px;
+  width: 50px;
+  background-color: #021134;
+}
 
-  ::placeholder {
-    font-size: 20px;
-  }
- 
+::placeholder {
+  font-size: 20px;
+}
 
+body {
+  background-color: rgb(255, 255, 255);
+}

@@ -8,7 +8,7 @@
           <div class="row">
             <div class="col-md-30">
 
-              <b class="word">
+              <b class="word" id="word-text">
                 <%= wordInfo.word %>
               </b> [ <%= wordInfo.ipa %> ] <i>
                   <%= wordInfo.pronounce %>
@@ -86,4 +86,23 @@
         const audio = new Audio()
         audio.src = "<%= wordInfo.audio  %>"
       </script>
+      <div class="pronunciation-check mt-4">
+        <h4>Pratique sua Pronúncia</h4>
+        <div class="d-flex align-items-center gap-3">
+          <button id="startRecording" class="btn btn-primary">
+            <i class="bi bi-mic-fill"></i> Gravar Pronúncia
+          </button>
+          <button id="stopRecording" class="btn btn-danger d-none">
+            <i class="bi bi-stop-fill"></i> Parar
+          </button>
+          <div id="recordingStatus" class="ms-3"></div>
+        </div>
+        <div id="resultArea" class="mt-3">
+          <div class="progress mb-2 d-none">
+            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+          </div>
+          <p id="pronunciationResult" class="mt-2"></p>
+        </div>
+      </div>
+      <script src="/js/speechRecognition.js"></script>
       <%- include("./partials/footer.ejs") %>

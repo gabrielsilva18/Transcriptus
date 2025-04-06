@@ -20,15 +20,24 @@ async function hasDefinition(word) {
 }
 
 // Generate random word
-const generateRandomWordtoDailyWord = () => {
-  let word = dictionary.generateRandomWord();
-  let word2 = dictionary.generateRandomWord();
-  console.log(word2);
-  if (!hasDefinition(word) || !wordDetails.hasPhrases(word)) {
-    word = dictionary.generateRandomWord();
-    console.log("New word: ", word);
+const generateRandomWordtoDailyWord = async () => {
+  try {
+    const today = dayjs().format("YYYY/MM/DD");
+    const randomWord = await dictionary.generateRandomWord();
+    const definition = await getWordInfo(randomWord);
+
+    const dailyWord = {
+      date: today,
+      dailyWord: randomWord,
+      definition: definition?.definition || "Definition not available"
+    };
+
+    fs.writeFileSync("dailyWord.json", JSON.stringify(dailyWord, null, 2));
+    return dailyWord;
+  } catch (error) {
+    console.error("Erro ao gerar palavra diária:", error);
+    throw error;
   }
-  return word;
 };
 
 // Generate JSON about word info
@@ -126,34 +135,11 @@ function dateIsToday(dateToday, wordInfoJson) {
 // Get the daily word info
 async function getDailyWordInfo() {
   try {
-    const filePath = "./dailyWord.json";
-    const dateToday = dayjs(Date.now()).format("YYYY/MM/DD");
-
-    if (fileIsValid(filePath)) {
-      // Check if the file is valid
-      const contentJsonDaily = await JSON.parse(
-        fs.readFileSync(filePath, "utf-8")
-      );
-      // If it's valid, either read or create
-      // Compare today's date with the stored one
-      // If it's the same, just load it
-      if (dateIsToday(dateToday, contentJsonDaily)) {
-        return {
-          dailyWord: contentJsonDaily.dailyWord,
-          definition: contentJsonDaily.definition,
-          phonetic: contentJsonDaily.phonetic,
-        };
-      } else {
-        let newDailyWord = await generateNewDailyWord(dateToday);
-        fs.writeFileSync("./dailyWord.json", newDailyWord);
-      }
-    } else {
-      // If not, generate another one
-      let newDailyWord = await generateNewDailyWord(dateToday);
-      fs.writeFileSync("./dailyWord.json", newDailyWord);
-    }
+    const data = fs.readFileSync("dailyWord.json", "utf8");
+    return JSON.parse(data);
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao ler arquivo dailyWord.json:", error);
+    return null;
   }
 }
 

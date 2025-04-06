@@ -1,15 +1,32 @@
-<nav class="text-white navbar navbar-expand-lg navbar" style="min-height: 100px; background-color: #021134;">
+<nav
+  class="text-white navbar navbar-expand-lg navbar"
+  style="min-height: 100px; background-color: #021134"
+>
   <div class="container-fluid">
     <a href="/" class="navbar-brand">
       <div class="logotipo">
-        TRANSCRIPTUS
+        <div class="language">
+          <img
+            src="/img/Transcriptus.svg"
+            width="100"
+            height="100"
+            alt="Ícone Inglês"
+          />
+          TRANSCRIPTUS
+        </div>
       </div>
     </a>
-    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <button
+      type="button"
+      class="navbar-toggler"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarCollapse"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse navbar-itens" id="navbarCollapse">
-      <div class="navbar-nav">
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="navbar-nav ms-auto">
+        <!-- Use ms-auto para alinhar à direita -->
         <a href="/" class="nav-item nav-link">
           <strong>Pronúncia</strong>
         </a>
@@ -19,23 +36,56 @@
         <a href="/tradutor" class="nav-item nav-link">
           <strong>Tradutor</strong>
         </a>
+        <% if (locals.user) { %>
+          <a href="/historico" class="nav-item nav-link history-link">
+            <strong>Histórico</strong>
+          </a>
+          <span class="nav-item nav-link user-name">
+            <strong>Olá, <%= user.name %></strong>
+          </span>
+          <a href="/logout" class="nav-item nav-link">
+            <strong>Sair</strong>
+          </a>
+        <% } else { %>
+          <a href="/login" class="nav-item nav-link">
+            <strong>Entrar</strong>
+          </a>
+          <a href="/register" class="nav-item nav-link">
+            <strong>Registrar</strong>
+          </a>
+        <% } %>
       </div>
     </div>
   </div>
 </nav>
+
 <style>
   .logotipo {
-    font-family: 'Roboto';
+    font-family: "Roboto";
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 40px;
-    margin-top: 15px;
     font-weight: bold;
+    text-align: center;
     color: white;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .logotipo:hover {
+    transform: scale(1.1); /* Aumenta o tamanho levemente */
+    color: #5582ed; /* Altera a cor ao passar o mouse */
+  }
+
+  .logotipo img {
+    transition: transform 0.3s ease;
+  }
+
+  .logotipo:hover img {
+    transform: rotate(10deg); /* Faz a imagem girar levemente */
   }
 
   .navbar-itens {
-    font-family: 'Roboto';
+    font-family: "Roboto";
     text-transform: uppercase;
     text-align: center;
     font-size: 30px;
@@ -52,6 +102,7 @@
 
   .navbar .navbar-nav .nav-item {
     position: relative;
+    font-size: 30px;
   }
 
   .navbar .navbar-nav .nav-item::after {
