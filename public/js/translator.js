@@ -9,8 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const targetFlag = document.getElementById('targetFlag');
     const sourceText = document.getElementById('sourceText');
     const targetText = document.getElementById('targetText');
+    const sourceCode = document.getElementById('sourceCode');
+    const targetCode = document.getElementById('targetCode');
     const micButton = document.getElementById('micButton');
     const micStatus = document.getElementById('micStatus');
+    const speakOutputBtn = document.getElementById('speakOutputBtn');
 
     // Configuração do reconhecimento de voz
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -37,6 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const tempText = sourceText.textContent;
         sourceText.textContent = targetText.textContent;
         targetText.textContent = tempText;
+
+        // Inverte também os códigos de idioma
+        const tempCode = sourceCode.textContent;
+        sourceCode.textContent = targetCode.textContent;
+        targetCode.textContent = tempCode;
 
         inputText.value = '';
         outputText.value = '';
@@ -99,6 +107,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Adiciona evento ao botão de inverter
     switchButton.addEventListener('click', switchLanguages);
+
+    // Função para escutar a tradução (text-to-speech)
+    function speakTranslation() {
+        if (!outputText.value.trim()) {
+            return;
+        }
+
+        // Para qualquer síntese de voz em andamento
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(outputText.value);
+        
+        // Define o idioma baseado no idioma de destino
+        utterance.lang = targetLangInput.value === 'en' ? 'en-US' : 'pt-BR';
+        
+        // Define a velocidade e tom
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        // Eventos para feedback visual
+        utterance.onstart = () => {
+            speakOutputBtn.classList.add('speaking');
+            speakOutputBtn.innerHTML = '<i class="bi bi-stop-fill"></i>';
+        };
+
+        utterance.onend = () => {
+            speakOutputBtn.classList.remove('speaking');
+            speakOutputBtn.innerHTML = '<i class="bi bi-volume-up"></i>';
+        };
+
+        utterance.onerror = (event) => {
+            console.error('Erro na síntese de voz:', event.error);
+            speakOutputBtn.classList.remove('speaking');
+            speakOutputBtn.innerHTML = '<i class="bi bi-volume-up"></i>';
+        };
+
+        // Inicia a síntese de voz
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // Adiciona evento ao botão de escutar tradução
+    speakOutputBtn.addEventListener('click', speakTranslation);
 
     // Função para limpar os campos
     window.clearTextArea = function() {

@@ -1,11 +1,9 @@
-fix: corrigir problema de áudio no deploy - implementar fallback para Web Speech API
+feat: corrigir alternância de idiomas e implementar text-to-speech no tradutor
 
-- Adicionar verificação de variável 'word' para evitar ReferenceError
-- Implementar detecção automática de ambiente de produção/Vercel
-- Forçar uso de Web Speech API em ambiente de deploy
-- Melhorar tratamento de erros com mensagens informativas
-- Adicionar logs detalhados para debug
-- Garantir fallback robusto quando arquivo de áudio não está disponível
-
-Resolve: Uncaught ReferenceError: word is not defined
-Resolve: Áudio não funciona no deploy do Vercel
+- Adicionar IDs únicos para códigos de idioma (PT/EN) no HTML
+- Atualizar função switchLanguages() para inverter códigos junto com bandeiras
+- Implementar funcionalidade de text-to-speech para escutar traduções
+- Adicionar feedback visual com animação pulse durante reprodução
+- Melhorar UX com mudança de ícone (volume → stop) durante fala
+- Adicionar estilos CSS para indicar estado ativo do botão de escutar
+- Corrigir detecção automática de idioma para síntese de voz
