@@ -30,9 +30,9 @@ processarBtn.addEventListener("click", async (event) => {
       wordPhonetic.textContent = data.phonetic;
     }
     
-    // Atualiza a tradução
-    if (wordTranslation && data.translatedDefinition) {
-      wordTranslation.textContent = data.translatedDefinition;
+    // Tradução removida - forçar uso do tradutor próprio
+    if (wordTranslation) {
+      wordTranslation.textContent = "Use o tradutor para traduzir a definição";
     }
 
     // Atualiza o botão de cópia
