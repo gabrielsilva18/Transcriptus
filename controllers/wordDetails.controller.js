@@ -443,7 +443,7 @@ const getInfoWord = async (word) => {
     // Create an object containing all information about the word
     const wordInfo = {
       word: text,
-      audio: audioResult ? "../audio.mp3" : null,
+      audio: (audioResult && !process.env.VERCEL && process.env.NODE_ENV !== 'production') ? "../audio.mp3" : null,
       translation: translation || ["Tradução indisponível"],
       phrases: Array.isArray(phrasesResult) ? phrasesResult : [],
       ipa: ipa,

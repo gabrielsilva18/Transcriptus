@@ -487,11 +487,20 @@ body {
   </style>
 
 <script>
+  // Configuração de áudio com fallback para deploy
   const word = "<%= wordInfo.word %>";
-  // Só cria o objeto Audio se o áudio estiver disponível
-  const audio = <%= wordInfo.audio ? `new Audio("${wordInfo.audio}")` : 'null' %>;
+  const isProduction = <%= process.env.NODE_ENV === 'production' || process.env.VERCEL ? 'true' : 'false' %>;
   
-  console.log('🔊 Configuração de áudio:', { word, audio, hasAudio: !!audio });
+  // No ambiente de produção (Vercel), sempre usa Web Speech API
+  const audio = isProduction ? null : <%= wordInfo.audio ? `new Audio("${wordInfo.audio}")` : 'null' %>;
+  
+  console.log('🔊 Configuração de áudio:', { 
+    word, 
+    audio, 
+    hasAudio: !!audio, 
+    isProduction,
+    wordInfoAudio: "<%= wordInfo.audio %>"
+  });
 </script>
 
 <script>
@@ -499,7 +508,14 @@ body {
   window.playAudio = function() {
     console.log('🎵 Reproduzindo áudio para:', word);
     
-    if (audio) {
+    // Verifica se a variável word está definida
+    if (!word || word === 'undefined') {
+      console.error('❌ Palavra não definida');
+      alert('Erro: palavra não encontrada');
+      return;
+    }
+    
+    if (audio && !isProduction) {
       console.log('📁 Usando arquivo de áudio');
       audio.play().catch(err => {
         console.log('❌ Erro ao reproduzir arquivo de áudio:', err);
@@ -514,7 +530,7 @@ body {
   
   function useWebSpeechAPI() {
     if ('speechSynthesis' in window) {
-      console.log('🎤 Iniciando síntese de voz');
+      console.log('🎤 Iniciando síntese de voz para:', word);
       const utterance = new SpeechSynthesisUtterance(word);
       utterance.lang = 'en-US';
       utterance.rate = 0.8;
@@ -522,7 +538,10 @@ body {
       
       utterance.onstart = () => console.log('🎵 Áudio iniciado');
       utterance.onend = () => console.log('🎵 Áudio finalizado');
-      utterance.onerror = (e) => console.log('❌ Erro na síntese:', e);
+      utterance.onerror = (e) => {
+        console.log('❌ Erro na síntese:', e);
+        alert('Erro ao reproduzir áudio. Tente novamente.');
+      };
       
       speechSynthesis.speak(utterance);
     } else {

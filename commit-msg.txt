@@ -1,96 +1,11 @@
-feat: implementar sistema híbrido de geração de conteúdo e configuração de ambiente
+fix: corrigir problema de áudio no deploy - implementar fallback para Web Speech API
 
-## 🚀 Novas Funcionalidades
+- Adicionar verificação de variável 'word' para evitar ReferenceError
+- Implementar detecção automática de ambiente de produção/Vercel
+- Forçar uso de Web Speech API em ambiente de deploy
+- Melhorar tratamento de erros com mensagens informativas
+- Adicionar logs detalhados para debug
+- Garantir fallback robusto quando arquivo de áudio não está disponível
 
-### Sistema Híbrido de Frases e Traduções
-- Implementar lógica híbrida: Reverso API + Gemini AI como fallback
-- Priorizar API Reverso para conteúdo autêntico
-- Completar com Gemini quando insuficiente (< 5 frases, < 15 traduções)
-- Sistema de deduplicação para evitar frases repetidas
-- Limite inteligente de 20 frases com feedback ao usuário
-
-### Sistema de Autenticação e Restrições
-- Implementar restrição de login para 'carregar mais frases'
-- Usuários não logados: 1 geração apenas
-- Usuários logados: gerações ilimitadas
-- Redirecionamento inteligente após login (retorna à página original)
-
-### Melhorias na Precisão de Pronúncia
-- Corrigir algoritmo de similaridade para frases de contexto
-- Normalização robusta (case-insensitive, sem pontuação)
-- Sistema de pontuação rebalanceado (90% similaridade, 10% confiança)
-- Verificação de correspondência exata para 100% de precisão
-
-## 🔧 Configuração e Infraestrutura
-
-### Variáveis de Ambiente
-- Migrar chave Gemini para variáveis de ambiente
-- Configurar dotenv para carregamento automático
-- Adicionar validação de chaves obrigatórias
-- Suporte completo para Supabase (DATABASE_URL + DIRECT_URL)
-
-### Scripts de Build Otimizados
-- Reestruturar scripts do package.json
-- Implementar build command: 'npm run build'
-- Comandos específicos para Prisma (generate + migrate)
-- Auto-reload em desenvolvimento com 'node --watch'
-
-### Detecção de Ambiente Vercel
-- Implementar fallback automático para Gemini no Vercel
-- Desabilitar geração de áudio em produção (limitações de filesystem)
-- Otimizações específicas para deployment
-
-## 🎨 Melhorias na Interface
-
-### Animações e Feedback Visual
-- Implementar animações de gravação no modal de pronúncia
-- Sistema de pulsação e piscar para botão de gravação
-- Feedback visual melhorado para estados de carregamento
-
-### Sistema de Destaque Inteligente
-- Destacar palavra pesquisada nas frases iniciais
-- Aplicar destaque nas frases carregadas dinamicamente
-- Suporte a variações da palavra (ex: 'flunk' vs 'flunks')
-
-### Filtros e Validação de Conteúdo
-- Filtrar palavra original das traduções
-- Remover traduções que contêm a palavra original
-- Validação de comprimento mínimo para traduções
-- Normalização de propriedades inconsistentes do Gemini
-
-## 🐛 Correções e Otimizações
-
-### Correções de Bugs
-- Corrigir botão 'carregar mais' que ficava em loading
-- Resolver problema de frases 'undefined' no carregamento
-- Corrigir redirecionamento após login
-- Implementar verificação de login via DOM (mais confiável)
-
-### Melhorias de Performance
-- Sistema de cache para frases já mostradas
-- Otimização de chamadas paralelas com Promise.all
-- Redução de timeouts e melhor tratamento de erros
-- Logs detalhados para debugging
-
-## 📁 Estrutura de Arquivos
-
-### Novos Arquivos
-- .env (configuração de ambiente)
-- vercel.json (configuração de deploy)
-- Documentação de configuração de ambiente
-
-### Arquivos Modificados
-- server.js: configuração dotenv e session
-- controllers/wordDetails.controller.js: lógica híbrida completa
-- routes/gemini.routes.js: variáveis de ambiente
-- public/js/phraseRecognition.js: sistema de carregamento
-- views/wordDetails.ejs: animações e feedback visual
-- package.json: scripts otimizados
-
-## 🎯 Resultados
-
-- Sistema robusto de geração de conteúdo
-- Experiência de usuário melhorada
-- Configuração profissional para produção
-- Código mais limpo e organizado
-- Deploy otimizado para Vercel
+Resolve: Uncaught ReferenceError: word is not defined
+Resolve: Áudio não funciona no deploy do Vercel
