@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node --watch server.js",
+    "dev": "node --watch server.js",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate deploy --schema=./prisma/schema.prisma",
-    "build": "npm run prisma:generate && npm run prisma:migrate"
+    "build": "npm run prisma:generate && npm run prisma:migrate",
+    "test:auth": "node test-auth.js"
   },
   "engines": {
     "node": ">=18.0.0",

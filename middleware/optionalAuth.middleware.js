@@ -14,6 +14,7 @@ const optionalAuthMiddleware = async (req, res, next) => {
     req.user = { id: decoded.userId };
     next();
   } catch (err) {
+    console.warn('Token inválido:', err.message);
     req.user = null;
     next();
   }
