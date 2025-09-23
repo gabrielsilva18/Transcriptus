@@ -6,8 +6,8 @@ const path = require("path");
 const generateAudio = async (word) => {
   // No Vercel, não gera áudio (limitação de sistema de arquivos)
   if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
-    console.log("🌐 Ambiente Vercel - áudio desabilitado");
-    return null;
+    console.log("🌐 Ambiente Vercel - usando Web Speech API no frontend");
+    return "web-speech"; // Indica que deve usar Web Speech API
   }
 
   return new Promise((resolve, reject) => {

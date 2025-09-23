@@ -135,16 +135,19 @@ class PhraseRecognition {
   setupButtons() {
     document.querySelectorAll(".practice-mic-button").forEach((button) => {
       button.addEventListener("click", () => {
+        // NÃO inicia gravação automaticamente - apenas abre o modal
         if (this.isRecording) {
           this.stopRecording();
         } else {
-          if (this.currentIndex !== null) {
-            this.clearResults(this.currentIndex);
-          }
-          this.currentIndex = button.dataset.index;
+          // Abre o modal para prática de pronúncia
           this.targetPhrase = button.dataset.phrase;
-          this.clearResults(this.currentIndex);
-          this.recognition.start();
+          this.modalPhrase.textContent = this.targetPhrase;
+          this.modalResult.innerHTML = "";
+          this.modalStatus.textContent = "";
+          this.modalStartBtn.classList.remove("d-none");
+          this.modalStopBtn.classList.add("d-none");
+          this.currentButton = button;
+          this.modal.show();
         }
       });
     });

@@ -16,9 +16,7 @@
               <h1 class="word-display me-2"><b class="word" id="word-text"><%= wordInfo.word %></b></h1>
               <span class="pronunciation-details">
                 [ <%= wordInfo.ipa %> ]
-                <% if (wordInfo.audio) { %>
-                <i class="bi bi-volume-up-fill audio-icon" onclick="audio.play()" id="player-audio"></i>
-                <% } %>
+                <i class="bi bi-volume-up-fill audio-icon" onclick="playAudio()" id="player-audio"></i>
               </span>
             </div>
             
@@ -492,6 +490,25 @@ body {
   const word = "<%= wordInfo.word %>";
   // Só cria o objeto Audio se o áudio estiver disponível
   const audio = <%= wordInfo.audio ? `new Audio("${wordInfo.audio}")` : 'null' %>;
+  
+  // Função para reproduzir áudio usando Web Speech API (fallback para Vercel)
+  function playAudio() {
+    if (audio) {
+      // Se há arquivo de áudio, usa ele
+      audio.play().catch(err => console.log('Erro ao reproduzir áudio:', err));
+    } else {
+      // Fallback: usa Web Speech API para sintetizar áudio
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        speechSynthesis.speak(utterance);
+      } else {
+        console.log('Web Speech API não suportada');
+      }
+    }
+  }
 </script>
   <script src="/js/speechRecognition.js"></script>
   <script src="/js/phraseRecognition.js"></script>
