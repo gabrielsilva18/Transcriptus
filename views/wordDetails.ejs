@@ -491,22 +491,43 @@ body {
   // Só cria o objeto Audio se o áudio estiver disponível
   const audio = <%= wordInfo.audio ? `new Audio("${wordInfo.audio}")` : 'null' %>;
   
-  // Função para reproduzir áudio usando Web Speech API (fallback para Vercel)
-  function playAudio() {
+  console.log('🔊 Configuração de áudio:', { word, audio, hasAudio: !!audio });
+</script>
+
+<script>
+  // Função global para reproduzir áudio
+  window.playAudio = function() {
+    console.log('🎵 Reproduzindo áudio para:', word);
+    
     if (audio) {
-      // Se há arquivo de áudio, usa ele
-      audio.play().catch(err => console.log('Erro ao reproduzir áudio:', err));
+      console.log('📁 Usando arquivo de áudio');
+      audio.play().catch(err => {
+        console.log('❌ Erro ao reproduzir arquivo de áudio:', err);
+        // Fallback para Web Speech API
+        useWebSpeechAPI();
+      });
     } else {
-      // Fallback: usa Web Speech API para sintetizar áudio
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.8;
-        utterance.pitch = 1;
-        speechSynthesis.speak(utterance);
-      } else {
-        console.log('Web Speech API não suportada');
-      }
+      console.log('🌐 Usando Web Speech API');
+      useWebSpeechAPI();
+    }
+  };
+  
+  function useWebSpeechAPI() {
+    if ('speechSynthesis' in window) {
+      console.log('🎤 Iniciando síntese de voz');
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
+      
+      utterance.onstart = () => console.log('🎵 Áudio iniciado');
+      utterance.onend = () => console.log('🎵 Áudio finalizado');
+      utterance.onerror = (e) => console.log('❌ Erro na síntese:', e);
+      
+      speechSynthesis.speak(utterance);
+    } else {
+      console.log('❌ Web Speech API não suportada');
+      alert('Áudio não disponível neste navegador');
     }
   }
 </script>
