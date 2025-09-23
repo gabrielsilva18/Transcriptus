@@ -1,3 +1,6 @@
+// Carregar variáveis de ambiente primeiro
+require('dotenv').config();
+
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
@@ -34,7 +37,8 @@ app.use(async (req, res, next) => {
     return next();
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const jwtSecret = process.env.JWT_SECRET || 'transcriptus_secret_key_2024_development';
+    const decoded = jwt.verify(token, jwtSecret);
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: { id: true, name: true, email: true },
