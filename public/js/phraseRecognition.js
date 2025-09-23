@@ -37,6 +37,8 @@ class PhraseRecognition {
         this.modalStopBtn.classList.add("d-none");
         this.currentButton = btn;
         this.modal.show();
+        
+        // NÃO inicia a gravação automaticamente - usuário deve clicar no botão
       });
     });
 

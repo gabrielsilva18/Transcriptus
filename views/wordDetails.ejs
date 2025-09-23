@@ -16,7 +16,9 @@
               <h1 class="word-display me-2"><b class="word" id="word-text"><%= wordInfo.word %></b></h1>
               <span class="pronunciation-details">
                 [ <%= wordInfo.ipa %> ]
+                <% if (wordInfo.audio) { %>
                 <i class="bi bi-volume-up-fill audio-icon" onclick="audio.play()" id="player-audio"></i>
+                <% } %>
               </span>
             </div>
             
@@ -488,7 +490,8 @@ body {
 
 <script>
   const word = "<%= wordInfo.word %>";
-  const audio = new Audio(`/audio/${word}.mp3`);
+  // Só cria o objeto Audio se o áudio estiver disponível
+  const audio = <%= wordInfo.audio ? `new Audio("${wordInfo.audio}")` : 'null' %>;
 </script>
   <script src="/js/speechRecognition.js"></script>
   <script src="/js/phraseRecognition.js"></script>
