@@ -72,7 +72,12 @@ const getIpaSymbols = (word) => {
 // Translate an IPA text to English words
 const getPronounceOfWord = async (wordIPA) => {
   try {
-    // se não encontrou, procurar em DictionaryAPI
+    // Verifica se wordIPA é válido e iterável
+    if (!wordIPA || typeof wordIPA !== 'string') {
+      console.warn("IPA inválido recebido:", wordIPA);
+      return "Pronúncia indisponível";
+    }
+
     let wordEn = "";
 
     const ipaToEn = {
@@ -134,10 +139,10 @@ const getPronounceOfWord = async (wordIPA) => {
       }
     }
     wordEn = wordEn.replaceAll("ˈ", "·");
-    return wordEn;
+    return wordEn || "Pronúncia indisponível";
   } catch (err) {
-    console.error(err);
-    throw err;
+    console.error("Erro ao converter IPA:", err);
+    return "Pronúncia indisponível";
   }
 };
 

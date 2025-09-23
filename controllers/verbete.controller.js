@@ -1,17 +1,45 @@
 const axios = require("axios");
 const dayjs = require("dayjs");
 const dictionary = require("./dictionary.controller");
-const { translate } = require("bing-translate-api");
 
-// Busca informações da palavra na API externa
+// Cache para evitar rate limiting
+const cache = new Map();
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas
+
+// Rate limiting para APIs externas
+let lastApiCall = 0;
+const API_DELAY = 2000; // 2 segundos entre chamadas
+
+// Delay entre chamadas de API para evitar rate limiting
+async function delayApiCall() {
+  const now = Date.now();
+  const timeSinceLastCall = now - lastApiCall;
+  
+  if (timeSinceLastCall < API_DELAY) {
+    const delay = API_DELAY - timeSinceLastCall;
+    console.log(`⏳ Aguardando ${delay}ms para evitar rate limiting...`);
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  
+  lastApiCall = Date.now();
+}
+
+// Busca informações da palavra na API externa com rate limiting
 async function getWordInfo(word) {
   try {
+    await delayApiCall();
+    
     const response = await axios.get(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,
+      { timeout: 10000 } // 10 segundos de timeout
     );
     return response.data;
   } catch (error) {
-    if (!error.response || error.response.status !== 404) {
+    if (error.response?.status === 429) {
+      console.warn(`⚠️ Rate limit atingido para Dictionary API. Palavra: ${word}`);
+      return null;
+    }
+    if (error.response?.status !== 404) {
       console.error("Erro ao buscar informações da palavra:", error.message);
     }
     return null;
@@ -32,62 +60,84 @@ async function getDefinition(wordInfoJson) {
   }
 }
 
-// Traduz definição para português
-async function translateDefinition(definition) {
-  if (!definition) return null;
-  try {
-    const result = await translate(definition, null, 'pt');
-    return result.translation;
-  } catch (error) {
-    console.error("Erro ao traduzir definição:", error);
-    return null;
-  }
-}
-
-// Gera palavra aleatória do dia com fonética e definição
+// Gera palavra aleatória do dia com fonética e definição (SEM tradução)
 async function generateRandomWordtoDailyWord() {
   try {
     const today = dayjs().format("YYYY/MM/DD");
-    let randomWord, phonetic, definition, translatedDefinition;
-
-    let attempts = 10;
-
-    while (attempts > 0) {
-      // 1. Gera palavra aleatória do ipadict
-      randomWord = dictionary.generateRandomWord();
-
-      // 2. Busca fonética do ipadict
-      const [ipaSymbols, phoneticTranscription] =
-        await dictionary.getDetailsOfTranscription(randomWord.toLowerCase());
-      phonetic = phoneticTranscription || ipaSymbols || "Phonetic not available";
-
-      // 3. Busca definição via API
-      const wordInfoJson = await getWordInfo(randomWord);
-      definition = await getDefinition(wordInfoJson);
-
-      if (definition) {
-        // 4. Traduz definição para português
-        translatedDefinition = await translateDefinition(definition);
-        break; // Palavra válida encontrada
-      }
-      attempts--;
+    
+    // Verifica cache primeiro
+    const cacheKey = `daily-word-${today}`;
+    const cached = cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log("📋 Usando palavra do dia do cache");
+      return cached.data;
     }
 
-    // fallback caso não consiga encontrar definição
+    let randomWord, phonetic, definition;
+    let attempts = 5; // Reduzido de 10 para 5 tentativas
+
+    while (attempts > 0) {
+      try {
+        // 1. Gera palavra aleatória do ipadict
+        randomWord = dictionary.generateRandomWord();
+        console.log(`🎲 Tentando palavra: ${randomWord}`);
+
+        // 2. Busca fonética do ipadict (sem dependência externa)
+        const [ipaSymbols, phoneticTranscription] =
+          await dictionary.getDetailsOfTranscription(randomWord.toLowerCase());
+        phonetic = phoneticTranscription || ipaSymbols || "Phonetic not available";
+
+        // 3. Busca definição via API (com rate limiting)
+        const wordInfoJson = await getWordInfo(randomWord);
+        definition = await getDefinition(wordInfoJson);
+
+        if (definition) {
+          console.log(`✅ Palavra válida encontrada: ${randomWord}`);
+          break; // Palavra válida encontrada
+        }
+        
+        attempts--;
+        console.log(`❌ Tentativa falhou para: ${randomWord}. Restam: ${attempts}`);
+        
+        // Delay entre tentativas para evitar rate limiting
+        if (attempts > 0) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } catch (error) {
+        console.error(`Erro na tentativa para ${randomWord}:`, error.message);
+        attempts--;
+      }
+    }
+
+    // Fallback caso não consiga encontrar definição
     if (!definition) {
+      console.log("🔄 Usando fallback para palavra do dia");
       randomWord = "welcome";
       definition = "An expression of greeting";
       phonetic = "/ˈwelkəm/";
-      translatedDefinition = "Uma expressão de cumprimento";
     }
 
-    return {
+    const result = {
       date: today,
       dailyWord: randomWord,
       definition,
       phonetic,
-      translatedDefinition,
+      // REMOVIDO: translatedDefinition - forçar uso do tradutor próprio
     };
+
+    // Salva no cache
+    cache.set(cacheKey, {
+      data: result,
+      timestamp: Date.now()
+    });
+
+    console.log("📝 Palavra do dia gerada:", {
+      word: randomWord,
+      hasDefinition: !!definition,
+      hasPhonetic: !!phonetic
+    });
+
+    return result;
   } catch (error) {
     console.error("Erro ao gerar palavra diária:", error);
     return {
@@ -95,7 +145,7 @@ async function generateRandomWordtoDailyWord() {
       dailyWord: "welcome",
       definition: "An expression of greeting",
       phonetic: "/ˈwelkəm/",
-      translatedDefinition: "Uma expressão de cumprimento",
+      // REMOVIDO: translatedDefinition
     };
   }
 }
@@ -104,5 +154,4 @@ module.exports = {
   generateRandomWordtoDailyWord,
   getWordInfo,
   getDefinition,
-  translateDefinition,
 };
