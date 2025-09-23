@@ -11,20 +11,31 @@ router.get('/historico', authMiddleware, async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const [searches, total] = await Promise.all([
-      prisma.search.findMany({
-        where: { userId: req.userId },
-        orderBy: { createdAt: 'desc' },
-        include: { user: true },
-        take: limit,
-        skip
-      }),
-      prisma.search.count({
-        where: { userId: req.userId }
-      })
-    ]);
+    let searches = [];
+    let total = 0;
+    let totalPages = 1;
 
-    const totalPages = Math.ceil(total / limit);
+    try {
+      const [searchesResult, totalResult] = await Promise.all([
+        prisma.search.findMany({
+          where: { userId: req.userId },
+          orderBy: { createdAt: 'desc' },
+          include: { user: true },
+          take: limit,
+          skip
+        }),
+        prisma.search.count({
+          where: { userId: req.userId }
+        })
+      ]);
+
+      searches = searchesResult;
+      total = totalResult;
+      totalPages = Math.ceil(total / limit);
+    } catch (dbError) {
+      console.warn("⚠️ Banco de dados indisponível, exibindo histórico vazio:", dbError.message);
+      // Continua com dados vazios se o banco falhar
+    }
 
     res.render('history', { 
       searches,

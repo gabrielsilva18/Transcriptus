@@ -47,10 +47,16 @@ router.post('/register', async (req, res) => {
       return res.render('auth/register', { error: 'A senha deve ter pelo menos 6 caracteres' });
     }
     
-    // Verificar se email já existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
+    // Verificar se email já existe (com fallback para banco indisponível)
+    let existingUser = null;
+    try {
+      existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
+    } catch (dbError) {
+      console.warn("⚠️ Banco de dados indisponível para verificação de email:", dbError.message);
+      return res.render('auth/register', { error: 'Serviço temporariamente indisponível. Tente novamente mais tarde.' });
+    }
     
     if (existingUser) {
       return res.render('auth/register', { error: 'Este email já está cadastrado' });
@@ -58,13 +64,19 @@ router.post('/register', async (req, res) => {
     
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword
-      }
-    });
+    let user;
+    try {
+      user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword
+        }
+      });
+    } catch (dbError) {
+      console.error("❌ Erro ao criar usuário:", dbError.message);
+      return res.render('auth/register', { error: 'Erro ao criar conta. Tente novamente mais tarde.' });
+    }
 
     const jwtSecret = process.env.JWT_SECRET || 'transcriptus_secret_key_2024_development';
     const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: '7d' });
@@ -106,9 +118,15 @@ router.post('/login', async (req, res) => {
       return res.render('auth/login', { error: 'Formato de email inválido', returnTo });
     }
     
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { email }
+      });
+    } catch (dbError) {
+      console.warn("⚠️ Banco de dados indisponível para login:", dbError.message);
+      return res.render('auth/login', { error: 'Serviço temporariamente indisponível. Tente novamente mais tarde.', returnTo });
+    }
 
     if (!user) {
       return res.render('auth/login', { error: 'Email não encontrado. Verifique se digitou corretamente.', returnTo });
@@ -146,11 +164,25 @@ router.get('/logout', (req, res) => {
 // Rota do perfil (requer autenticação)
 router.get('/profile', authMiddleware, async (req, res) => {
   try {
-    // Busca dados atualizados do usuário
-    const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: { id: true, name: true, email: true, createdAt: true }
-    });
+    // Busca dados atualizados do usuário (com fallback para banco indisponível)
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: req.userId },
+        select: { id: true, name: true, email: true, createdAt: true }
+      });
+    } catch (dbError) {
+      console.warn("⚠️ Banco de dados indisponível para perfil:", dbError.message);
+      return res.render('profile', { 
+        user: { 
+          id: req.userId, 
+          name: 'Usuário', 
+          email: 'email@exemplo.com', 
+          createdAt: new Date() 
+        },
+        error: 'Dados do perfil temporariamente indisponíveis'
+      });
+    }
     
     if (!user) {
       req.flash('error', 'Usuário não encontrado');
