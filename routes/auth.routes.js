@@ -38,6 +38,24 @@ router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
     
+    // Validação básica
+    if (!name || !email || !password) {
+      return res.render('auth/register', { error: 'Todos os campos são obrigatórios' });
+    }
+    
+    if (password.length < 6) {
+      return res.render('auth/register', { error: 'A senha deve ter pelo menos 6 caracteres' });
+    }
+    
+    // Verificar se email já existe
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
+    
+    if (existingUser) {
+      return res.render('auth/register', { error: 'Este email já está cadastrado' });
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const user = await prisma.user.create({
@@ -58,7 +76,18 @@ router.post('/register', async (req, res) => {
     });
     res.redirect('/');
   } catch (error) {
-    res.render('auth/register', { error: 'Erro ao registrar usuário' });
+    console.error('Erro no registro:', error);
+    
+    // Mensagens de erro mais específicas
+    if (error.code === 'P2002') {
+      return res.render('auth/register', { error: 'Este email já está cadastrado' });
+    }
+    
+    if (error.message && error.message.includes('Invalid email')) {
+      return res.render('auth/register', { error: 'Email inválido' });
+    }
+    
+    res.render('auth/register', { error: 'Erro interno do servidor. Tente novamente.' });
   }
 });
 
@@ -66,18 +95,29 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password, returnTo } = req.body;
     
+    // Validação básica
+    if (!email || !password) {
+      return res.render('auth/login', { error: 'Email e senha são obrigatórios', returnTo });
+    }
+    
+    // Validação de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.render('auth/login', { error: 'Formato de email inválido', returnTo });
+    }
+    
     const user = await prisma.user.findUnique({
       where: { email }
     });
 
     if (!user) {
-      return res.render('auth/login', { error: 'Usuário não encontrado', returnTo });
+      return res.render('auth/login', { error: 'Email não encontrado. Verifique se digitou corretamente.', returnTo });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     
     if (!validPassword) {
-      return res.render('auth/login', { error: 'Senha inválida', returnTo });
+      return res.render('auth/login', { error: 'Senha incorreta. Tente novamente.', returnTo });
     }
 
     const jwtSecret = process.env.JWT_SECRET || 'transcriptus_secret_key_2024_development';
@@ -93,7 +133,8 @@ router.post('/login', async (req, res) => {
     const redirectUrl = returnTo && returnTo !== '/' ? returnTo : '/';
     res.redirect(redirectUrl);
   } catch (error) {
-    res.render('auth/login', { error: 'Erro ao fazer login', returnTo: req.body.returnTo });
+    console.error('Erro no login:', error);
+    res.render('auth/login', { error: 'Erro interno do servidor. Tente novamente.', returnTo: req.body.returnTo });
   }
 });
 
