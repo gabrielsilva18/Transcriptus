@@ -8,7 +8,8 @@ router.get("/", async (req, res) => {
   try {
     const dailyWordInfo = await verbeteController.generateRandomWordtoDailyWord();
 
-    const textError = null;
+    // Check for error in query parameter or flash message
+    const textError = req.query.error || (req.flash && req.flash('textError')[0]) || null;
 
     res.render("index", { 
       dailyWordInfo,

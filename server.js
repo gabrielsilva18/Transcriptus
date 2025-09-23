@@ -6,6 +6,8 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const flash = require("express-flash");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -19,8 +21,18 @@ const historyRoutes = require("./routes/history.routes");
 
 const port = process.env.PORT || 3000;
 
-// Cookies
+// Session and Flash messages
 app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'transcriptus_session_secret_2024',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+app.use(flash());
 
 // define view engine to ejs and bodyParser
 app.set("view engine", "ejs");
