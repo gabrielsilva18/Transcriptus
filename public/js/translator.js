@@ -154,7 +154,73 @@ document.addEventListener('DOMContentLoaded', function() {
     // Adiciona evento ao botão de escutar tradução
     speakOutputBtn.addEventListener('click', speakTranslation);
 
-    // Função para limpar os campos
+    // Função para copiar texto para a área de transferência
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) {
+            // Fallback para navegadores mais antigos
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            } catch (fallbackErr) {
+                document.body.removeChild(textArea);
+                return false;
+            }
+        }
+    }
+
+    // Função para mostrar feedback visual de cópia
+    function showCopyFeedback(button) {
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i>';
+        button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+        
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+            button.style.background = '';
+        }, 1500);
+    }
+
+    // Função para limpar apenas o texto de entrada
+    function clearInputText() {
+        inputText.value = '';
+        inputText.focus();
+    }
+
+    // Função para limpar apenas o texto de saída
+    function clearOutputText() {
+        outputText.value = '';
+    }
+
+    // Eventos dos botões de ação
+    document.getElementById('copyInputBtn').addEventListener('click', async () => {
+        if (inputText.value.trim()) {
+            const success = await copyToClipboard(inputText.value);
+            if (success) {
+                showCopyFeedback(document.getElementById('copyInputBtn'));
+            }
+        }
+    });
+
+    document.getElementById('copyOutputBtn').addEventListener('click', async () => {
+        if (outputText.value.trim()) {
+            const success = await copyToClipboard(outputText.value);
+            if (success) {
+                showCopyFeedback(document.getElementById('copyOutputBtn'));
+            }
+        }
+    });
+
+    document.getElementById('clearInputBtn').addEventListener('click', clearInputText);
+
+    // Função para limpar os campos (mantida para compatibilidade)
     window.clearTextArea = function() {
         inputText.value = '';
         outputText.value = '';

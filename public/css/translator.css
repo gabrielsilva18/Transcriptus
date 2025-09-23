@@ -491,3 +491,20 @@ body {
     box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
   }
 }
+
+/* Estilos para feedback de cópia */
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.action-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animação suave para mudança de ícone */
+.action-btn i {
+  transition: all 0.3s ease;
+}
