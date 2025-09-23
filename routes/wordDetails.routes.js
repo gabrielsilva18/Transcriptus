@@ -72,22 +72,30 @@ router.post("/text/save", inputIsValid, async (req, res) => {
     const word = req.body.text;
     const userId = res.locals.user?.id;
 
-    // Salva no histórico se o usuário estiver logado
+    // Salva no histórico se o usuário estiver logado (com fallback para banco indisponível)
     if (userId) {
-      await prisma.search.create({
-        data: {
-          word: word,
-          type: "PRONUNCIATION",
-          userId: userId,
-        },
-      });
+      try {
+        await prisma.search.create({
+          data: {
+            word: word,
+            type: "PRONUNCIATION",
+            userId: userId,
+          },
+        });
+        console.log("✅ Histórico salvo com sucesso");
+      } catch (dbError) {
+        console.warn("⚠️ Banco de dados indisponível, continuando sem salvar histórico:", dbError.message);
+        // Continua a execução mesmo se o banco falhar
+      }
     }
 
+    // Busca informações da palavra (não depende do banco)
     const wordInfo = await wordInfoController.getInfoWord(word);
     res.redirect(`/word/${word}`);
   } catch (error) {
-    console.error(error);
-    res.redirect("/");
+    console.error("❌ Erro ao processar palavra:", error);
+    // Em caso de erro, redireciona para a página inicial com mensagem de erro
+    res.redirect("/?error=Erro ao processar palavra. Tente novamente.");
   }
 });
 
