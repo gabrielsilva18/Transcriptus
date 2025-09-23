@@ -1,20 +1,22 @@
 const jwt = require("jsonwebtoken");
 
-const authMiddleware = async (req, res, next) => {
+const optionalAuthMiddleware = async (req, res, next) => {
   const token = req.cookies && req.cookies.token;
 
   if (!token) {
-    return res.redirect("/login");
+    req.user = null;
+    return next();
   }
 
   try {
     const jwtSecret = process.env.JWT_SECRET || 'transcriptus_secret_key_2024_development';
     const decoded = jwt.verify(token, jwtSecret);
-    req.userId = decoded.userId;
+    req.user = { id: decoded.userId };
     next();
   } catch (err) {
-    return res.redirect("/login");
+    req.user = null;
+    next();
   }
 };
 
-module.exports = authMiddleware;
+module.exports = optionalAuthMiddleware;

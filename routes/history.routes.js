@@ -35,7 +35,6 @@ router.get('/historico', authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error('Erro ao carregar histórico:', error);
-    req.flash('error', 'Erro ao carregar histórico');
     res.redirect('/');
   }
 });
