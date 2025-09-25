@@ -10,18 +10,41 @@
       bottom: 32px;
       right: 32px;
       z-index: 9999;
-      background: #4285f4;
+      background: linear-gradient(135deg, #4285f4, #34a853);
       color: #fff;
       border: none;
       border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      font-size: 28px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      width: 70px;
+      height: 70px;
+      font-size: 20px;
+      box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      animation: pulse 2s infinite;
     }
-    #gemini-float-btn:hover { background: #3367d6; }
+    
+    #gemini-float-btn:hover { 
+      background: linear-gradient(135deg, #3367d6, #2d8f47);
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(66, 133, 244, 0.5);
+    }
+    
+    .chat-label {
+      font-size: 10px;
+      font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4); }
+      50% { box-shadow: 0 6px 20px rgba(66, 133, 244, 0.6), 0 0 0 10px rgba(66, 133, 244, 0.1); }
+      100% { box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4); }
+    }
     #gemini-chat-box {
       display: none;
       position: fixed;
@@ -106,12 +129,18 @@
     #gemini-chat-send:hover { background: #3367d6; }
   </style>
 
-  <button id="gemini-float-btn" title="Tire dúvidas com IA">💬</button>
+  <button id="gemini-float-btn" title="💬 Chat com IA - Tire suas dúvidas sobre inglês com inteligência artificial">
+    <i class="bi bi-robot"></i>
+    <span class="chat-label">IA</span>
+  </button>
   <div id="gemini-chat-box">
-    <div id="gemini-chat-header">Gemini IA</div>
+    <div id="gemini-chat-header">
+      <i class="bi bi-robot me-2"></i>
+      Assistente IA - Dúvidas sobre Inglês
+    </div>
     <div id="gemini-chat-messages"></div>
     <div id="gemini-chat-input-area">
-      <input id="gemini-chat-input" type="text" placeholder="Digite sua dúvida..." autocomplete="off" />
+      <input id="gemini-chat-input" type="text" placeholder="Ex: Como usar 'have' e 'has'? Qual a diferença entre 'a' e 'an'?" autocomplete="off" />
       <button id="gemini-chat-send">Enviar</button>
     </div>
   </div>
@@ -125,7 +154,13 @@
 
     geminiBtn.onclick = () => {
       geminiBox.style.display = geminiBox.style.display === 'flex' ? 'none' : 'flex';
-      if (geminiBox.style.display === 'flex') geminiInput.focus();
+      if (geminiBox.style.display === 'flex') {
+        geminiInput.focus();
+        // Adicionar mensagem de boas-vindas se for a primeira vez
+        if (geminiMsgs.children.length === 0) {
+          appendMsg('Assistente IA', '👋 Olá! Sou seu assistente de inglês. Posso ajudar com:\n\n• Gramática e regras\n• Pronúncia e fonética\n• Traduções e significados\n• Dicas de estudo\n\nComo posso ajudá-lo hoje?');
+        }
+      }
     };
 
     function appendMsg(sender, text) {

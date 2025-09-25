@@ -1,5 +1,5 @@
 <%- include("./partials/header.ejs") %>
-<%- include("./partials/navbar-white.ejs") %>
+<%- include("./partials/navbar.ejs") %>
 <link rel="stylesheet" href="/css/translator.css">
 
 <body>
@@ -63,17 +63,17 @@
                     <div class="area-header">
                       <span class="area-label">Texto Original</span>
                       <div class="area-actions">
-                        <button type="button" class="action-btn" id="clearInputBtn" title="Limpar texto">
+                        <button type="button" class="action-btn" id="clearInputBtn" title="Limpar texto" data-tooltip="Limpar texto">
                           <i class="bi bi-x-circle"></i>
                         </button>
-                        <button type="button" class="action-btn" id="copyInputBtn" title="Copiar texto">
+                        <button type="button" class="action-btn" id="copyInputBtn" title="Copiar texto" data-tooltip="Copiar texto">
                           <i class="bi bi-clipboard"></i>
                         </button>
                       </div>
                     </div>
                     <div class="textarea-wrapper">
                       <textarea id="inputText" name="texts" rows="8" placeholder="Digite ou cole seu texto aqui para traduzir..."></textarea>
-                      <button type="button" id="micButton" class="mic-button" title="Usar microfone">
+                      <button type="button" id="micButton" class="mic-button" title="Usar microfone" data-tooltip="Usar microfone">
                         <i class="bi bi-mic-fill"></i>
                       </button>
                     </div>
@@ -82,14 +82,27 @@
                     </div>
                   </div>
                   
+                  <!-- Botão de Tradução Central -->
+                  <div class="translate-button-center">
+                    <button id="traduzir" type="submit" class="btn-translate-center">
+                      <i class="bi bi-translate"></i>
+                      <span>TRADUZIR</span>
+                      <div class="btn-loading d-none">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                          <span class="visually-hidden">Traduzindo...</span>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                  
                   <div class="output-area">
                     <div class="area-header">
                       <span class="area-label">Tradução</span>
                       <div class="area-actions">
-                        <button type="button" class="action-btn" id="copyOutputBtn" title="Copiar tradução">
+                        <button type="button" class="action-btn" id="copyOutputBtn" title="Copiar tradução" data-tooltip="Copiar tradução">
                           <i class="bi bi-clipboard"></i>
                         </button>
-                        <button type="button" class="action-btn" id="speakOutputBtn" title="Ouvir tradução">
+                        <button type="button" class="action-btn" id="speakOutputBtn" title="Ouvir tradução" data-tooltip="Ouvir tradução">
                           <i class="bi bi-volume-up"></i>
                         </button>
                       </div>
@@ -107,17 +120,8 @@
               <!-- Status do Microfone -->
               <div id="micStatus" class="mic-status"></div>
 
-              <!-- Botões de Ação -->
-              <div class="action-buttons">
-                <button id="traduzir" type="submit" class="btn-translate">
-                  <i class="bi bi-translate me-2"></i>
-                  <span>TRADUZIR</span>
-                  <div class="btn-loading d-none">
-                    <div class="spinner-border spinner-border-sm" role="status">
-                      <span class="visually-hidden">Traduzindo...</span>
-                    </div>
-                  </div>
-                </button>
+              <!-- Botão de Limpar -->
+              <div class="clear-button-section">
                 <button type="button" class="btn-clear" onclick="clearTextArea()">
                   <i class="bi bi-trash me-2"></i>
                   LIMPAR TUDO
