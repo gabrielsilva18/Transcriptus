@@ -8,39 +8,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
-const { PrismaClient } = require("@prisma/client");
-
-// Configuração do Prisma com tratamento de erro de conexão
-let prisma;
-try {
-  prisma = new PrismaClient({
-    log: ['error', 'warn'],
-    errorFormat: 'pretty',
-  });
-  
-  // Testa a conexão
-  prisma.$connect().then(() => {
-    console.log('✅ Conexão com banco de dados estabelecida');
-  }).catch((error) => {
-    console.warn('⚠️ Aviso: Banco de dados não disponível:', error.message);
-    console.log('📝 Aplicação continuará funcionando sem persistência de dados');
-  });
-} catch (error) {
-  console.error('❌ Erro ao inicializar Prisma:', error.message);
-  // Cria um mock do Prisma para evitar erros
-  prisma = {
-    user: {
-      findUnique: () => Promise.resolve(null),
-      create: () => Promise.resolve({}),
-    },
-    search: {
-      create: () => Promise.resolve({}),
-      findMany: () => Promise.resolve([]),
-    },
-    $connect: () => Promise.resolve(),
-    $disconnect: () => Promise.resolve(),
-  };
-}
+const prisma = require('./lib/prisma');
 
 const geminiRoutes = require('./routes/gemini.routes');
 const routerSave = require("./routes/wordDetails.routes");

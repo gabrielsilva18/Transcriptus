@@ -3,8 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const wordInfoController = require("../controllers/wordDetails.controller");
 const inputIsValid = require("../middleware/checkInput.middleware");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require('../lib/prisma');
 const path = require("path");
 const fs = require("fs");
 
